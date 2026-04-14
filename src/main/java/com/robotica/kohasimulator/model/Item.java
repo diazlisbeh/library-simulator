@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.type.NumericBooleanConverter;
 
 import java.time.LocalDateTime;
 
@@ -37,15 +38,19 @@ public class Item {
     @Column(name = "branchcode", nullable = false, length = 10)
     private String branchcode;
 
+    @Convert(converter = NumericBooleanConverter.class)
     @Column(name = "available", nullable = false)
     private Boolean available = true;
 
+    @Convert(converter = NumericBooleanConverter.class)
     @Column(name = "damaged", nullable = false)
     private Boolean damaged = false;
 
+    @Convert(converter = NumericBooleanConverter.class)
     @Column(name = "lost", nullable = false)
     private Boolean lost = false;
 
+    @Convert(converter = NumericBooleanConverter.class)
     @Column(name = "withdrawn", nullable = false)
     private Boolean withdrawn = false;
 

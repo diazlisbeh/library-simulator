@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
+import org.hibernate.type.NumericBooleanConverter;
 
 import java.time.LocalDateTime;
 
@@ -40,6 +41,7 @@ public class Checkout {
     @Column(name = "renewals_count")
     private Integer renewalsCount = 0;
 
+    @Convert(converter = NumericBooleanConverter.class)
     @Column(name = "auto_renew")
     private Boolean autoRenew = false;
 }

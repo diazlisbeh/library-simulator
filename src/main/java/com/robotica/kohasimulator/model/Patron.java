@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.NumericBooleanConverter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -54,6 +55,7 @@ public class Patron {
     @Column(name = "flags")
     private Long flags = 0L;
 
+    @Convert(converter = NumericBooleanConverter.class)
     @Column(name = "active", nullable = false)
     private Boolean active = true;
 
