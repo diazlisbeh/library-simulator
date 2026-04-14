@@ -1,11 +1,15 @@
 /home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/KohaSimulatorApplication.java
 /home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/config/OpenApiConfig.java
 /home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/config/SecurityConfig.java
+/home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/controller/AdminController.java
 /home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/controller/AuthController.java
 /home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/controller/BiblioController.java
 /home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/controller/CheckoutController.java
 /home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/controller/ItemController.java
 /home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/controller/PatronController.java
+/home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/dto/AdminBiblioRequest.java
+/home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/dto/AdminItemRequest.java
+/home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/dto/AdminPatronRequest.java
 /home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/dto/ApiError.java
 /home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/dto/BiblioResponse.java
 /home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/dto/CheckoutRequest.java
@@ -28,6 +32,7 @@
 /home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/security/JwtAuthFilter.java
 /home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/security/JwtUtil.java
 /home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/security/UserDetailsServiceImpl.java
+/home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/service/AdminService.java
 /home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/service/AuthService.java
 /home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/service/CheckoutService.java
 /home/lizz/Documents/Robotica/koha-simulator/src/main/java/com/robotica/kohasimulator/service/ItemService.java
