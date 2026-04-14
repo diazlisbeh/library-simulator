@@ -1,18 +1,14 @@
 -- =============================================================
 -- Koha Simulator — Recreate all tables with VARCHAR(36) primary keys
--- Drops existing tables and recreates them with proper types.
+-- (SQLite compatible — sin SET FOREIGN_KEY_CHECKS)
 -- Passwords: admin → "admin123" | patrons → "password123"
 -- =============================================================
-
-SET FOREIGN_KEY_CHECKS = 0;
 
 DROP TABLE IF EXISTS checkouts;
 DROP TABLE IF EXISTS items;
 DROP TABLE IF EXISTS patrons;
 DROP TABLE IF EXISTS biblios;
 DROP TABLE IF EXISTS branches;
-
-SET FOREIGN_KEY_CHECKS = 1;
 
 -- ── branches ──────────────────────────────────────────────────────────────────
 CREATE TABLE branches (
@@ -43,7 +39,7 @@ CREATE TABLE patrons (
     date_enrolled DATE,
     expiry_date   DATE,
     created_at    TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
-    updated_at    TIMESTAMP    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_at    TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (branchcode) REFERENCES branches(branchcode)
 );
 
@@ -94,10 +90,9 @@ CREATE TABLE checkouts (
 );
 
 -- =============================================================
--- Sample data — fixed UUIDs for reproducibility
+-- Sample data — fixed UUIDs para reproducibilidad
 -- =============================================================
 
--- Branches
 INSERT INTO branches (branch_id, branchcode, branchname, branchaddress1, branchemail) VALUES
     ('00000000-0000-0001-0000-000000000001', 'CPL', 'Biblioteca Central APEC',   'Av. Máximo Gómez 72, Santo Domingo', 'biblioteca@apec.edu.do'),
     ('00000000-0000-0001-0000-000000000002', 'BRA', 'Biblioteca Sede Norte',     'Calle El Conde 120, Santiago',        'biblioteca.norte@apec.edu.do');
@@ -108,7 +103,7 @@ INSERT INTO patrons (patron_id, cardnumber, userid, password_hash, firstname, su
 VALUES ('00000000-0000-0002-0000-000000000001', 'ADM0001', 'admin',
         '$2b$10$8oZxYV1jQXii0SnoBR5Sge9dN4UKbNaqSkmjn2ZMwMK./fuJm5F1G',
         'Admin', 'Sistema', 'admin@apec.edu.do',
-        'ST', 'CPL', 1, TRUE, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 2 YEAR));
+        'ST', 'CPL', 1, 1, date('now'), date('now', '+2 years'));
 
 -- Regular patrons (password: password123)
 INSERT INTO patrons (patron_id, cardnumber, userid, password_hash, firstname, surname, email,
@@ -118,19 +113,19 @@ VALUES
      '$2b$10$CPBoHtvChJwSwhrBCVO4B.pGIdPLTGNWNQK5bRZOOVsZ/Q0Wg/Y1m',
      'Juan', 'Pérez', 'jperez@estudiante.apec.edu.do',
      '809-555-0101', 'Calle Primera 10, Santo Domingo',
-     'PT', 'CPL', 0, TRUE, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 1 YEAR)),
+     'PT', 'CPL', 0, 1, date('now'), date('now', '+1 year')),
 
     ('00000000-0000-0002-0000-000000000003', '2024002', 'mgarcia',
      '$2b$10$CPBoHtvChJwSwhrBCVO4B.pGIdPLTGNWNQK5bRZOOVsZ/Q0Wg/Y1m',
      'María', 'García', 'mgarcia@estudiante.apec.edu.do',
      '809-555-0102', 'Calle Segunda 20, Santo Domingo',
-     'PT', 'CPL', 0, TRUE, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 1 YEAR)),
+     'PT', 'CPL', 0, 1, date('now'), date('now', '+1 year')),
 
     ('00000000-0000-0002-0000-000000000004', '2024003', 'cramos',
      '$2b$10$CPBoHtvChJwSwhrBCVO4B.pGIdPLTGNWNQK5bRZOOVsZ/Q0Wg/Y1m',
      'Carlos', 'Ramos', 'cramos@estudiante.apec.edu.do',
      '809-555-0103', 'Calle Tercera 30, Santiago',
-     'PT', 'BRA', 0, TRUE, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 1 YEAR));
+     'PT', 'BRA', 0, 1, date('now'), date('now', '+1 year'));
 
 -- Bibliographic records
 INSERT INTO biblios (biblio_id, title, author, isbn, publisher, publication_year, language) VALUES
@@ -151,21 +146,21 @@ INSERT INTO biblios (biblio_id, title, author, isbn, publisher, publication_year
     ('00000000-0000-0003-0000-000000000008', 'Estadística para Administración',
      'Berenson, Mark L.',     '9780132936927', 'Pearson',          2022, 'es');
 
--- Items (2 copies per biblio — barcode = ISBN for first copy, ISBN-2 for second)
+-- Items (2 copies per biblio — barcode = ISBN)
 INSERT INTO items (item_id, biblio_id, barcode, location, callnumber, itype, branchcode, available) VALUES
-    ('00000000-0000-0004-0000-000000000001', '00000000-0000-0003-0000-000000000001', '9780137001910',   'Sala A', 'QA76.73.J38 D45',  'BK', 'CPL', TRUE),
-    ('00000000-0000-0004-0000-000000000002', '00000000-0000-0003-0000-000000000001', '9780137001910-2', 'Sala A', 'QA76.73.J38 D45',  'BK', 'CPL', TRUE),
-    ('00000000-0000-0004-0000-000000000003', '00000000-0000-0003-0000-000000000002', '9780132943260',   'Sala A', 'QA76.9.D3 C66',    'BK', 'CPL', TRUE),
-    ('00000000-0000-0004-0000-000000000004', '00000000-0000-0003-0000-000000000002', '9780132943260-2', 'Sala A', 'QA76.9.D3 C66',    'BK', 'CPL', TRUE),
-    ('00000000-0000-0004-0000-000000000005', '00000000-0000-0003-0000-000000000003', '9780136006633',   'Sala B', 'QA76.76.O63 T36',  'BK', 'CPL', TRUE),
-    ('00000000-0000-0004-0000-000000000006', '00000000-0000-0003-0000-000000000003', '9780136006633-2', 'Sala A', 'QA76.76.O63 T36',  'BK', 'BRA', TRUE),
-    ('00000000-0000-0004-0000-000000000007', '00000000-0000-0003-0000-000000000004', '9780262033848',   'Sala B', 'QA76.9.A43 C67',   'BK', 'CPL', TRUE),
-    ('00000000-0000-0004-0000-000000000008', '00000000-0000-0003-0000-000000000004', '9780262033848-2', 'Sala B', 'QA76.9.A43 C67',   'BK', 'CPL', TRUE),
-    ('00000000-0000-0004-0000-000000000009', '00000000-0000-0003-0000-000000000005', '9780132126953',   'Sala C', 'TK5105.5 .T36',    'BK', 'CPL', TRUE),
-    ('00000000-0000-0004-0000-000000000010', '00000000-0000-0003-0000-000000000005', '9780132126953-2', 'Sala B', 'TK5105.5 .T36',    'BK', 'BRA', TRUE),
-    ('00000000-0000-0004-0000-000000000011', '00000000-0000-0003-0000-000000000006', '9780137035151',   'Sala C', 'QA76.758 .S65',    'BK', 'CPL', TRUE),
-    ('00000000-0000-0004-0000-000000000012', '00000000-0000-0003-0000-000000000006', '9780137035151-2', 'Sala C', 'QA76.758 .S65',    'BK', 'CPL', TRUE),
-    ('00000000-0000-0004-0000-000000000013', '00000000-0000-0003-0000-000000000007', '9781285740621',   'Sala D', 'QA303.2 .S74',     'BK', 'CPL', TRUE),
-    ('00000000-0000-0004-0000-000000000014', '00000000-0000-0003-0000-000000000007', '9781285740621-2', 'Sala C', 'QA303.2 .S74',     'BK', 'BRA', TRUE),
-    ('00000000-0000-0004-0000-000000000015', '00000000-0000-0003-0000-000000000008', '9780132936927',   'Sala D', 'QA276.12 .B47',    'BK', 'CPL', TRUE),
-    ('00000000-0000-0004-0000-000000000016', '00000000-0000-0003-0000-000000000008', '9780132936927-2', 'Sala D', 'QA276.12 .B47',    'BK', 'CPL', TRUE);
+    ('00000000-0000-0004-0000-000000000001', '00000000-0000-0003-0000-000000000001', '9780137001910',   'Sala A', 'QA76.73.J38 D45',  'BK', 'CPL', 1),
+    ('00000000-0000-0004-0000-000000000002', '00000000-0000-0003-0000-000000000001', '9780137001910-2', 'Sala A', 'QA76.73.J38 D45',  'BK', 'CPL', 1),
+    ('00000000-0000-0004-0000-000000000003', '00000000-0000-0003-0000-000000000002', '9780132943260',   'Sala A', 'QA76.9.D3 C66',    'BK', 'CPL', 1),
+    ('00000000-0000-0004-0000-000000000004', '00000000-0000-0003-0000-000000000002', '9780132943260-2', 'Sala A', 'QA76.9.D3 C66',    'BK', 'CPL', 1),
+    ('00000000-0000-0004-0000-000000000005', '00000000-0000-0003-0000-000000000003', '9780136006633',   'Sala B', 'QA76.76.O63 T36',  'BK', 'CPL', 1),
+    ('00000000-0000-0004-0000-000000000006', '00000000-0000-0003-0000-000000000003', '9780136006633-2', 'Sala A', 'QA76.76.O63 T36',  'BK', 'BRA', 1),
+    ('00000000-0000-0004-0000-000000000007', '00000000-0000-0003-0000-000000000004', '9780262033848',   'Sala B', 'QA76.9.A43 C67',   'BK', 'CPL', 1),
+    ('00000000-0000-0004-0000-000000000008', '00000000-0000-0003-0000-000000000004', '9780262033848-2', 'Sala B', 'QA76.9.A43 C67',   'BK', 'CPL', 1),
+    ('00000000-0000-0004-0000-000000000009', '00000000-0000-0003-0000-000000000005', '9780132126953',   'Sala C', 'TK5105.5 .T36',    'BK', 'CPL', 1),
+    ('00000000-0000-0004-0000-000000000010', '00000000-0000-0003-0000-000000000005', '9780132126953-2', 'Sala B', 'TK5105.5 .T36',    'BK', 'BRA', 1),
+    ('00000000-0000-0004-0000-000000000011', '00000000-0000-0003-0000-000000000006', '9780137035151',   'Sala C', 'QA76.758 .S65',    'BK', 'CPL', 1),
+    ('00000000-0000-0004-0000-000000000012', '00000000-0000-0003-0000-000000000006', '9780137035151-2', 'Sala C', 'QA76.758 .S65',    'BK', 'CPL', 1),
+    ('00000000-0000-0004-0000-000000000013', '00000000-0000-0003-0000-000000000007', '9781285740621',   'Sala D', 'QA303.2 .S74',     'BK', 'CPL', 1),
+    ('00000000-0000-0004-0000-000000000014', '00000000-0000-0003-0000-000000000007', '9781285740621-2', 'Sala C', 'QA303.2 .S74',     'BK', 'BRA', 1),
+    ('00000000-0000-0004-0000-000000000015', '00000000-0000-0003-0000-000000000008', '9780132936927',   'Sala D', 'QA276.12 .B47',    'BK', 'CPL', 1),
+    ('00000000-0000-0004-0000-000000000016', '00000000-0000-0003-0000-000000000008', '9780132936927-2', 'Sala D', 'QA276.12 .B47',    'BK', 'CPL', 1);
